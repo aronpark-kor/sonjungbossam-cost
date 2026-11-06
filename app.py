@@ -708,11 +708,12 @@ def render_photo_uploader(item_key_name, title_label="완성 요리 / 조리 기
         """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 4. 실시간 엑셀 원가 연동 엔진 (121종 식자재 · 23종 소분 · 20종 메뉴 · 9대 고정비)
+# 4. 실시간 엑셀 원가 연동 엔진 (cost_data.xlsx 및 logo.jpg 완벽 대응)
 # ==============================================================================
 @st.cache_data
 def load_and_recalculate_all():
     candidates = [
+        "cost_data.xlsx",
         "손정보쌈_원가계산_가나다순정리_소분카드정렬_판매가반영.xlsx",
         "손정보쌈_원가계산_가나다순정리_소분카드정렬_판매가반영_2.xlsx",
         "손정보쌈_원가계산_레시피입력완성.xlsx"
@@ -723,7 +724,7 @@ def load_and_recalculate_all():
             file_path = c
             break
     if file_path is None:
-        st.error("엑셀 데이터 파일을 찾을 수 없습니다. 폴더 내 엑셀 파일명을 확인해 주세요.")
+        st.error("엑셀 데이터 파일(cost_data.xlsx)을 찾을 수 없습니다. 폴더 내 파일명을 확인해 주세요.")
         st.stop()
 
     # 1) 식재료 마스터 DB (Sheet 01)
@@ -942,10 +943,10 @@ for fk, fv in DEFAULT_FIXED_COSTS.items():
         st.session_state[fk] = fv
 
 # ==============================================================================
-# 5. 사이드바 로고(手:정 손정) 및 메뉴 이동
+# 5. 사이드바 로고(logo.jpg) 및 메뉴 이동
 # ==============================================================================
 with st.sidebar:
-    logo_candidates = ["손정보쌈로고 세로형.jpg", "손정보쌈로고 세로형_2.jpg", "logo.jpg", "logo.png"]
+    logo_candidates = ["logo.jpg", "손정보쌈로고 세로형.jpg", "손정보쌈로고 세로형_2.jpg", "logo.png"]
     logo_loaded = False
     for lc in logo_candidates:
         if os.path.exists(lc):
@@ -978,7 +979,7 @@ with st.sidebar:
     st.markdown("---")
     st.caption("© 2026 (주)육성푸드 손정보쌈 본사 | 가맹점 통합 관리 포털")
 
-# 상단 배너 ('手:정 (수정)' ➔ '手:정 (손정)')
+# 상단 배너 ('手:정 (손정)')
 st.markdown(f"""
 <div class="sj-hero">
     <div style="min-width:0; width:100%;">
@@ -1538,7 +1539,7 @@ elif nav == "🔍 3. 실매출 · 원가 · 고정비 통합 진단":
         conclusions.append(
             f"<li><b>[채소/농산 및 마트·시장 개인 구매 과다 (채소 {int(round(veg_diff)):+,}원 / 개인구매 비중 {personal_share:.1f}%)]</b>: "
             f"마트나 시장에서 개인 카드로 구매한 금액이 월 <b>{int(round(total_personal)):,}원</b>입니다. "
-            f"① 배추 절이기 작업 시 <b>배추 3통을 절인 소금물을 버리지 말고 알배추 2박스 절이는 데 재사용</b>하여 소금·배추 손실을 줄이고, "
+            f"① 배추 절이기 작업 시 <b>배추 3통을 절인 소금물을 버리지 않고 알배추 2박스 절이는 데 재사용</b>하여 소금·배추 손실을 줄이고, "
             f"② 미나리는 <b>줄기(냉국수 50g)와 잎(무침 40g)을 나누어 사용</b>하며, 점심 기본반찬 4종은 예상 점심 매출에 맞춰 조리량을 조절해 버리는 반찬을 줄여주세요.</li>"
         )
     if bev_share < 10.0:
